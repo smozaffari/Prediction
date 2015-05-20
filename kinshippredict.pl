@@ -1,14 +1,38 @@
 #!usr/bin/env/perl
 
-#testing bitbucket
-
 use strict;
 use warnings;
 
 my %fev;
 my %rel;
-my %family;
-my %child;
+
+my %point0020id;
+my %point0020rel;
+my %point0078id;
+my %point0078rel;
+my %point0313id;
+my %point0313rel;
+my %point0625id;
+my %point0625rel;
+my %point0938id;
+my %point0938rel;
+my %point1id;
+my %point1rel;
+my %point125id;
+my %point125rel;
+my %point2id;
+my %point2rel;
+my %point25id;
+my %point25rel;
+my %point3id;
+my %point3rel;
+my %point375id;
+my %point375rel;
+my %point4id;
+my %point4rel;
+my %point5id;
+my %point5rel;
+
 my %kin;
 
 my %pred;
@@ -33,73 +57,110 @@ while (my $line = <REL>) {
     my $id2 = $line[1];
     $rel{$id1}{$id2} = $line[2];
     $rel{$id2}{$id1} = $line[2];
+    if ($line[2] > 0.0020) {
+        push @{$point0020id{$id1} }, $id2;
+	push @{$point0020id{$id2} }, $id1;
+	push @{$point0020rel{$id1} }, $line[2];
+	push @{$point0020rel{$id2} }, $line[2];
+	if ($line[2] > 0.0078) {
+	    push @{ $point0078id{$id1} }, $id2;
+	    push @{ $point0078id{$id2} }, $id1;
+	    push @{ $point0078rel{$id1} }, $line[2];
+	    push @{ $point0078rel{$id2} }, $line[2];
+	    if ($line[2] > 0.0313) {
+		push @{$point0313id{$id1} }, $id2;
+		push @{$point0313id{$id2} }, $id1;
+		push @{$point0313rel{$id1} }, $line[2];
+		push @{$point0313rel{$id2} }, $line[2];
+		if ($line[2] > 0.0625) {
+		    push @{$point0625id{$id1} }, $id2;
+		    push @{$point0625id{$id2} }, $id1;
+		    push @{$point0625rel{$id1} }, $line[2];
+		    push @{$point0625rel{$id2} }, $line[2];
+		    if ($line[2] > 0.0938) {
+			push @{$point0938id{$id1} }, $id2;
+			push @{$point0938id{$id2} }, $id1;
+			push @{$point0938rel{$id1} }, $line[2];
+			push @{$point0938rel{$id2} }, $line[2];
+			if ($line[2] > 0.1) {
+			    push @{$point1id{$id1} }, $id2;
+			    push @{$point1id{$id2} }, $id1;
+			    push @{$point1rel{$id1} }, $line[2];
+			    push @{$point1rel{$id2} }, $line[2];
+			    if ($line[2] > 0.125) {
+				push @{$point125id{$id1} }, $id2;
+				push @{$point125id{$id2} }, $id1;
+				push @{$point125rel{$id1} }, $line[2];
+				push @{$point125rel{$id2} }, $line[2];
+				if ($line[2] > 0.2) {
+				    push @{$point2id{$id1} }, $id2;
+				    push @{$point2id{$id2} }, $id1;
+				    push @{$point2rel{$id1} }, $line[2];
+				    push @{$point2rel{$id2} }, $line[2];
+				    if ($line[2] > 0.25) {
+					push @{$point25id{$id1} }, $id2;
+					push @{$point25id{$id2} }, $id1;
+					push @{$point25rel{$id1} }, $line[2];
+					push @{$point25rel{$id2} }, $line[2];
+					if ($line[2] > 0.3) {
+					    push @{$point3id{$id1} }, $id2;
+					    push @{$point3id{$id2} }, $id1;
+					    push @{$point3rel{$id1} }, $line[2];
+					    push @{$point3rel{$id2} }, $line[2];
+					    if ($line[2] > 0.375) {
+						push @{$point375id{$id1} }, $id2;
+						push @{$point375id{$id2} }, $id1;
+						push @{$point375rel{$id1} }, $line[2];
+						push @{$point375rel{$id2} }, $line[2];
+						if ($line[2] > 0.4) {
+						    push @{$point4id{$id1} }, $id2;
+						    push @{$point4id{$id2} }, $id1;
+						    push @{$point4rel{$id1} }, $line[2];
+						    push @{$point4rel{$id2} }, $line[2];
+						    if ($line[2] > 0.5) {
+							push @{$point5id{$id1} }, $id2;
+							push @{$point5id{$id2} }, $id1;
+							push @{$point5rel{$id1} }, $line[2];
+							push @{$point5rel{$id2} }, $line[2];
+						    }
+						}
+					    }
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
 }
 close (REL);
 
-open (FAM, "/group/ober-resources/users/smozaffari/Prediction/results/fevparents") || die "nope: $!";
-my $first = <FAM>;
-while (my $line = <FAM>) {
-    my @line = split "\t", $line;
-    my $ind = $line[0];
-    my $mom = $line[5];
-    my $dad = $line[2];
-    #if another child of the same mother already exists
-    if ($child{$mom}[0] ) {
-	my $person = $child{$mom}[0]; #take that previous child
-#	push @{ $family{$ind} }, @{ $family{$person}}; #add previous child's relatives to new child's relatives
-#	for my $j (0..$#{ $family{$person} } ) { #for each relative that was there previously,
-#	    my $relative = $family{$person}[$j];
-#	    push @{ $kin{$ind} }, $rel{$ind}{$relative}; #calculate this person's kinship with that relative
-#	}
 
-	push @{ $family{$ind} }, $mom;
-	push @{ $family{$ind} }, $dad; #add dad to list of child's family                                                                                                                                                                                                    
-        push @{ $kin{$ind} }, $rel{$mom}{$ind}; #in respective order, add mom and child's relation to kinship values                                                                                                                                                          
-        push @{ $kin{$ind} }, $rel{$dad}{$ind}; #in respective order, add dad and child's relation to kinship values
-        
-	for my $m (0..$#{ $child{$mom}}) { #for each previous child
-	    my $childx= $child{$mom}[$m]; 
-	    push @{ $family{$childx} }, $ind; #add this new person to the previous child's family 
-	    push @{ $family{$ind} }, $childx; #add the previous child to the new person's family                                                                                                                                                                              
-	    push @{ $kin{$childx} }, $rel{$childx}{$ind}; #add the new person's kinship to the previous child's kinship of related individuals                                                                                                                                
-	    push @{ $kin{$ind} }, $rel{$childx}{$ind}; #add the previous child's kinship to the new person's kinship of related individuals        
-	}	
-	push @{ $child{$mom}}, $ind;
-    } else { #if another child of the same mother does not exist
-	$child{$mom}[0] = $ind; #count this child as the first one/only one for now.
-	push @{ $family{$ind} }, $mom; #add mom to list of child's family
-	push @{ $family{$ind} }, $dad; #add dad to list of child's family
-	push @{ $kin{$ind} }, $rel{$mom}{$ind}; #in respective order, add mom and child's relation to kinship values
-	push @{ $kin{$ind} }, $rel{$dad}{$ind}; #in respective order, add dad and child's relation to kinship values
-    }
-    $sex{$ind} = $line[4];
-#foreach my $d (sort keys %family) {
-    #for my $m (sort keys %{ $family{$d} } ) {
-	#my $ind = $family{$d}{$m};
-}
-close (FAM);
-
-open (OUT, ">/group/ober-resources/users/smozaffari/Prediction/results/fev1fvc_siblings_parents") || die "nope: $!";
-open (NEF, ">/group/ober-resources/users/smozaffari/Prediction/results/fev1fvc_siblings_parents_ids")|| die "nop: $!";
+open (OUT, ">/group/ober-resources/users/smozaffari/Prediction/results/fev1fvc_bykinship") || die "nope: $!";
+open (NEF, ">/group/ober-resources/users/smozaffari/Prediction/results/fev1fvc_bykinship_ids")|| die "nop: $!";
 print OUT "Individual\ttotalrelatives\tPred\tObs\n";
 print NEF "Individual\trel#\trelative\tfev_relative\tkinship\tPred\tObs";
-for my $people (keys %family) {
+for my $people (keys %point0020id) {
     print OUT ("$people: ");
     my $sum=0;
     my $pred=0;
     my $count=0;
-    for my $i (0..$#{ $family{$people} } ) {
-	$sum = $sum + $kin{$people}[$i];
+    for my $i (0..$#{ $point0020id{$people} } ) {
+	$sum = $sum + $point0020rel{$people}[$i];
 	$count = $count + 1;
     }
-    for my $i (0.. $#{ $family{$people} } ) {
-	my $relative = $family{$people}[$i];
+    for my $i (0.. $#{ $point0020id{$people} } ) {
+	my $relative = $point0020id{$people}[$i];
 	print NEF "$people $i $relative\t$fev{$relative}\t";
-	print NEF "$kin{$people}[$i]\t";
-	$pred = $pred + (($fev{$relative})*($kin{$people}[$i]))/$sum;
+	print NEF "$point0020rel{$people}[$i]\t";
+	$pred = $pred + (($fev{$relative})*($point0020rel{$people}[$i]))/$sum;
     }
     print OUT ("$count\t$pred\t$fev{$people}\n"); 
     print NEF ("$pred\t$fev{$people}\n");
 }
 
 close (OUT);
+close(NEF);
