@@ -7,7 +7,7 @@ my %fev;
 my %rel;
 
 my %point;
-my @cutoff =(0.002, 0.0078, 0.313, 0.0625, 0.0938, 0.1, 0.125, 0.2, 0.25, 0.3, 0.375, 0.4, 0.5);
+my @cutoff =(0.002, 0.0078, 0.0313, 0.0625, 0.0938, 0.1, 0.125, 0.2, 0.25, 0.3, 0.375, 0.4, 0.5, 0.6);
 
 my %pred;
 my %sex;
@@ -55,15 +55,19 @@ foreach my $k (sort keys %point) {
 	for my $i (0..$#{ $point{$k}{$person} } ) {
 	    my $relative = $point{$k}{$person}[$i];
 	    print ("$person $relative $rel{$person}{$relative}\n");
-	    $sum = $sum + $rel{$person}{$relative};
-	    $count = $count + 1;
+	    if ($rel{$person}{$relative} != "NA") {
+		$sum = $sum + $rel{$person}{$relative};
+		$count = $count + 1;
+	    }
 	}
 	for my $i (0.. $#{ $point{$k}{$person} } ) {
 	    my $relative = $point{$k}{$person}[$i];
 	    print NEF "$person $i $relative\t$fev{$relative}\t";
 	    print NEF "$rel{$person}{$relative}\t";
-	    $pred = $pred + (($fev{$relative})*($rel{$person}{$relative}))/$sum;
-    }
+	    if ($rel{$person}{$relative} != "NA") {	    
+		$pred = $pred + (($fev{$relative})*($rel{$person}{$relative}))/$sum;
+	    }
+	}
 	print OUT ("$count\t$pred\t$fev{$person}\n"); 
 	print NEF ("$pred\t$fev{$person}\n");
     }
